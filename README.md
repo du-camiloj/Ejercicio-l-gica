@@ -6,13 +6,14 @@ Una vez ubicados en la ruta debemos correr el comando "npm i" o "npm install".
 
 Luego que se hayan instalado las dependencias necesarias para el proyecto, podemos correr el comando "npm run dev" en la consola, que contiene el script en el packge.json de "ts-node script.ts" y con esto ver en la consola los resultados obtenidos para las preguntas realizadas.
 
-#Las respuestas obtenidas a las  incognitas fueron: 
+## Las respuestas obtenidas a las preguntas son: 
 
 1) El estado con mayor acumulado a la fecha es:  California con 61526
 
 2) El estado con menor acumulado a la fecha es:  American Samoa con 0
 
-3)Porcentaje de muertes por estado
+3) Porcentaje de muertes por estado
+
 ```
 Alabama tiene una poblacion de 4903185 y un % de muertes de 0.2214%
 Alaska tiene una poblacion de 740995 y un % de muertes de 0.0468%

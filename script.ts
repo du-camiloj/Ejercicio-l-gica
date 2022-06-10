@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { parse } from 'csv-parse';
+import { parse } from "csv-parse";
 
 type dataSet = {
     Province_State: string;
@@ -16,7 +16,7 @@ type dataSet = {
   parse(fileContent, {
     delimiter: ',', 
   }, 
-  (error, result: Array<dataSet[]>) => {
+  (error:any, result: Array<dataSet[]>) => {
     if (error) {
       console.error(error);
     }
@@ -30,21 +30,23 @@ type dataSet = {
     let dataStates: Array<{
         ProvinceState: string,
         population: number,
-        covidDeaths: number
+        covidDeaths: number,
+        PercentageDeaths: number
     }> =[]
     for(let i:number=0; i<states.length; i++){
         let populationSum: number = 0;
-        let covid19_deaths: number =0;        
+        let covidDeaths: number =0;        
         const resultStates:dataSet[][] = result.filter(data=>data[6].toString()==states[i])
         resultStates.forEach(data=> {
             populationSum = populationSum + parseInt(data[11].toString())
-            covid19_deaths = covid19_deaths + parseInt(data[data.length-1].toString())
+            covidDeaths = covidDeaths + parseInt(data[data.length-1].toString())
         })
         if(populationSum>0){
             dataStates.push({
                 ProvinceState: states[i],
                 population: populationSum,
-                covidDeaths: covid19_deaths
+                covidDeaths: covidDeaths,
+                PercentageDeaths: parseFloat(((covidDeaths*100)/populationSum).toFixed(4))
             })
         }   
     }
@@ -52,20 +54,28 @@ type dataSet = {
   });
 })();
 
-function answer(dataStates: Array<{ProvinceState: string,population: number,covidDeaths: number}>){
-    console.log("ESTOY AQUI*************************************")
+function answer(dataStates: Array<{ProvinceState: string,population: number,covidDeaths: number,PercentageDeaths: number}>){
+    //Pregunta 1 Estado con mayor acumulado a la fecha
     const max : number = Math.max(...dataStates.map(data => data.covidDeaths));
     console.log("1) El estado con mayor acumulado a la fecha es: ",dataStates.find(value => value.covidDeaths === max)?.ProvinceState, "con", max)
+    console.log("\n")
     
+    //Pregunta 2 Estado con menor acumulado a la fecha
     const min : number = Math.min(...dataStates.map(data => data.covidDeaths));
     console.log("2) El estado con menor acumulado a la fecha es: ",dataStates.find(value => value.covidDeaths === min)?.ProvinceState, "con", min)
-
-
-    // 3.	El porcentaje de muertes vs el total de población por estado
+    console.log("\n")
+    
+    
+    // Pregunta 3 El porcentaje de muertes vs el total de población por estado
     console.log("3)Porcentaje de muertes por estado")
     dataStates.forEach(data =>{
-        const PercentageDeaths: number = parseFloat(((data.covidDeaths*100)/data.population).toFixed(4))
-        console.log(data.ProvinceState,"tiene una poblacion de",data.population,"y un % de muertes de", PercentageDeaths)
+        console.log(data.ProvinceState,"tiene una poblacion de",data.population,"y un % de muertes de", data.PercentageDeaths+"%")
     })
+    console.log("\n")
+    //pregunta 4 Cual fue el estado más afectado 
+    const maxDeaths : number = Math.max(...dataStates.map(data => data.PercentageDeaths));
+    console.log("4) El estado mas afectado es:",dataStates.find(value => value.PercentageDeaths === maxDeaths)?.ProvinceState, "Ya que es el que posee",
+    "la relacion de porcentajes de muertes\n mas alta con restpecto a su poblacion total teniendo un % de relacion de",maxDeaths)
+
 
 }
